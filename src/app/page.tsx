@@ -8,13 +8,22 @@ import { Moon, Sun, Plus, RefreshCw } from 'lucide-react';
 import CaseTypeForm from '@/components/CaseTypeForm';
 import CaseTypeList from '@/components/CaseTypeList';
 import ConfirmDialog from '@/components/ConfirmDialog';
+import Pagination from '@/components/Pagination';
 import { useTheme } from '@/contexts/ThemeContext';
+
+// Force dynamic rendering since this page fetches data from API
+export const dynamic = 'force-dynamic';
 
 export default function Home() {
   const [caseTypes, setCaseTypes] = useState<CaseType[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [editingCaseType, setEditingCaseType] = useState<CaseType | undefined>();
   const [loading, setLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [pageSize, setPageSize] = useState(25);
+  const [totalCount, setTotalCount] = useState(0);
+  const [hasMore, setHasMore] = useState(false);
   const { theme, toggleTheme } = useTheme();
   const [deleteDialog, setDeleteDialog] = useState<{ isOpen: boolean; id?: number; name?: string }>({
     isOpen: false
@@ -24,46 +33,19 @@ export default function Home() {
   });
 
   useEffect(() => {
-    // Add sample data for testing
-    const sampleData: CaseType[] = [
-      {
-        id: 1,
-        caseTypeCode: 'SAMPLE_001',
-        caseTypeName: 'Sample Case Type 1',
-        caseType: 'Regular',
-        isActive: 'A',
-        userName: 'Quality.Admin',
-        loginId: null
-      },
-      {
-        id: 2,
-        caseTypeCode: 'SAMPLE_002',
-        caseTypeName: 'Sample Case Type 2',
-        caseType: 'Special',
-        isActive: 'I',
-        userName: 'Quality.Admin',
-        loginId: null
-      }
-    ];
-    setCaseTypes(sampleData);
-    
-    // Load case types on first render
-    loadCaseTypes();
+    loadCaseTypes(1);
   }, []);
 
-
-  const loadCaseTypes = async () => {
+  const loadCaseTypes = async (page: number = currentPage, size?: number) => {
     try {
       setLoading(true);
-      const data = await getCaseTypes();
-      if (Array.isArray(data)) {
-        setCaseTypes(data);
-        toast.success('Case types loaded successfully!');
-      } else {
-        // fallback if API returns wrapped format
-        setCaseTypes((data as any).items || []);
-        toast.success('Case types loaded successfully!');
-      }
+      const data = await getCaseTypes(page, size || pageSize);
+      setCaseTypes(data.items);
+      setTotalPages(data.totalPages);
+      setCurrentPage(data.currentPage);
+      setTotalCount(data.totalCount);
+      setHasMore(data.hasMore);
+      toast.success('Case types loaded successfully!');
     } catch (error) {
       console.error(error);
       toast.error('Failed to load case types, using local sample data');
@@ -88,9 +70,22 @@ export default function Home() {
         }
       ];
       setCaseTypes(sampleData);
+      setTotalPages(1);
+      setCurrentPage(1);
     } finally {
       setLoading(false);
     }
+  };
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    loadCaseTypes(page);
+  };
+
+  const handlePageSizeChange = (newSize: number) => {
+    setPageSize(newSize);
+    setCurrentPage(1);
+    loadCaseTypes(1, newSize);
   };
 
   const handleSubmit = async (caseType: CaseType) => {
@@ -100,18 +95,16 @@ export default function Home() {
         const toUpdate = { ...caseType, id: editDialog.caseType.id };
         const resp = await updateCaseType(toUpdate);
         if (resp?.statusCode === 'S') {
-          const updatedCaseTypes = caseTypes.map(ct => ct.id === editDialog.caseType!.id ? toUpdate : ct);
-          setCaseTypes(updatedCaseTypes);
           toast.success(resp.message || 'Case type updated successfully!');
+          loadCaseTypes(currentPage);
         } else {
           toast.error(resp?.message || 'Failed to update case type');
         }
       } else {
         const resp = await createCaseType(caseType);
         if (resp?.statusCode === 'S') {
-          const newCaseType = { ...caseType, id: Date.now() };
-          setCaseTypes(prev => [...prev, newCaseType]);
           toast.success(resp.message || 'Case type created successfully!');
+          loadCaseTypes(1);
         } else {
           toast.error(resp?.message || 'Failed to create case type');
         }
@@ -141,9 +134,8 @@ export default function Home() {
       setLoading(true);
       const resp = await deleteCaseType(deleteDialog.id);
       if (resp?.statusCode === 'S') {
-        const filteredCaseTypes = caseTypes.filter(ct => ct.id !== deleteDialog.id);
-        setCaseTypes(filteredCaseTypes);
         toast.success(resp.message || 'Case type deleted successfully!');
+        loadCaseTypes(currentPage);
       } else {
         toast.error(resp?.message || 'Failed to delete case type');
       }
@@ -183,19 +175,14 @@ export default function Home() {
             </h1>
             <div className="flex items-center gap-3">
               <button
-                onClick={loadCaseTypes}
+                onClick={() => loadCaseTypes(currentPage)}
                 disabled={loading}
                 className="flex items-center gap-2 px-3 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50 transition-colors"
               >
                 <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
                 <span className="hidden sm:inline">Refresh</span>
               </button>
-              {/* <button
-                onClick={toggleTheme}
-                className="p-2 rounded-lg bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
-              >
-                {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-              </button> */}
+             
             </div>
           </div>
 
@@ -224,13 +211,26 @@ export default function Home() {
             </div>
           )}
 
-          {/* List */}
-          <CaseTypeList
-            caseTypes={caseTypes}
-            onEdit={handleEdit}
-            onDelete={handleDeleteClick}
-            loading={loading}
-          />
+          {/* List with Pagination */}
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+            <CaseTypeList
+              caseTypes={caseTypes}
+              onEdit={handleEdit}
+              onDelete={handleDeleteClick}
+              loading={loading}
+            />
+            
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+              pageSize={pageSize}
+              onPageSizeChange={handlePageSizeChange}
+              totalCount={totalCount}
+              hasMore={hasMore}
+              loading={loading}
+            />
+          </div>
 
           {/* Delete Confirmation Dialog */}
           <ConfirmDialog

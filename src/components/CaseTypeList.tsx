@@ -13,17 +13,15 @@ interface CaseTypeListProps {
 export default function CaseTypeList({ caseTypes, onEdit, onDelete, loading }: CaseTypeListProps) {
   if (loading) {
     return (
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
-        <div className="p-8 text-center">
-          <Loader2 className="h-8 w-8 animate-spin mx-auto text-blue-500 mb-4" />
-          <p className="text-gray-600 dark:text-gray-400">Loading case types...</p>
-        </div>
+      <div className="p-8 text-center">
+        <Loader2 className="h-8 w-8 animate-spin mx-auto text-blue-500 mb-4" />
+        <p className="text-gray-600 dark:text-gray-400">Loading case types...</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+    <>
       <div className="p-6 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700">
         <h2 className="text-xl font-semibold text-gray-900 dark:text-white flex items-center gap-2">
           <Code className="h-5 w-5" />
@@ -131,6 +129,6 @@ export default function CaseTypeList({ caseTypes, onEdit, onDelete, loading }: C
           </table>
         </div>
       )}
-    </div>
+    </>
   );
 }
