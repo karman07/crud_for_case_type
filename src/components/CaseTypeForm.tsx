@@ -70,14 +70,14 @@ export default function CaseTypeForm({ caseType, onSubmit, onCancel, loading }: 
 
           <div>
             <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">Case Type</label>
-            <select
+            <input
+              type="text"
               value={formData.caseType}
               onChange={(e) => setFormData({...formData, caseType: e.target.value})}
               className="w-full p-3 border rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-            >
-              <option value="Regular">Regular</option>
-              <option value="Special">Special</option>
-            </select>
+              placeholder="Enter case type"
+              required
+            />
           </div>
 
           <div>

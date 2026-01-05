@@ -35,12 +35,12 @@ export const getToken = async (): Promise<string> => {
 
 const toApiPayload = (caseType: CaseType) => ({
   id: caseType.id,
-  case_type_code: caseType.caseTypeCode,
-  case_type_name: caseType.caseTypeName,
-  case_type: caseType.caseType,
-  is_active: caseType.isActive,
-  user_name: caseType.userName,
-  login_id: caseType.loginId
+  caseTypeCode: caseType.caseTypeCode,
+  caseTypeName: caseType.caseTypeName,
+  caseType: caseType.caseType,
+  isActive: caseType.isActive,
+  userName: caseType.userName,
+  loginId: caseType.loginId
 });
 
 const fromApiItem = (item: any): CaseType => ({
