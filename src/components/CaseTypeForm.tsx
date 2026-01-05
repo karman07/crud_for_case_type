@@ -28,9 +28,9 @@ export default function CaseTypeForm({ caseType, onSubmit, onCancel, loading }: 
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
-      <div className="p-6 border-b border-gray-200 dark:border-gray-700">
-        <h2 className="text-xl font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+    <div className="bg-gray-800 rounded-xl shadow-lg border border-gray-700">
+      <div className="p-6 border-b border-gray-700">
+        <h2 className="text-xl font-semibold text-white flex items-center gap-2">
           {caseType ? <Save className="h-5 w-5" /> : <Code className="h-5 w-5" />}
           {caseType ? 'Update' : 'Create'} Case Type
         </h2>
@@ -39,7 +39,7 @@ export default function CaseTypeForm({ caseType, onSubmit, onCancel, loading }: 
       <form onSubmit={handleSubmit} className="p-6 space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300 flex items-center gap-2">
+            <label className="block text-sm font-medium mb-2 text-gray-300 flex items-center gap-2">
               <Code className="h-4 w-4" />
               Case Type Code
             </label>
@@ -47,14 +47,14 @@ export default function CaseTypeForm({ caseType, onSubmit, onCancel, loading }: 
               type="text"
               value={formData.caseTypeCode}
               onChange={(e) => setFormData({...formData, caseTypeCode: e.target.value})}
-              className="w-full p-3 border rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+              className="w-full p-3 border rounded-lg bg-gray-700 text-white border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
               placeholder="Enter case type code"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300 flex items-center gap-2">
+            <label className="block text-sm font-medium mb-2 text-gray-300 flex items-center gap-2">
               <Type className="h-4 w-4" />
               Case Type Name
             </label>
@@ -62,33 +62,33 @@ export default function CaseTypeForm({ caseType, onSubmit, onCancel, loading }: 
               type="text"
               value={formData.caseTypeName}
               onChange={(e) => setFormData({...formData, caseTypeName: e.target.value})}
-              className="w-full p-3 border rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+              className="w-full p-3 border rounded-lg bg-gray-700 text-white border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
               placeholder="Enter case type name"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">Case Type</label>
+            <label className="block text-sm font-medium mb-2 text-gray-300">Case Type</label>
             <input
               type="text"
               value={formData.caseType}
               onChange={(e) => setFormData({...formData, caseType: e.target.value})}
-              className="w-full p-3 border rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+              className="w-full p-3 border rounded-lg bg-gray-700 text-white border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
               placeholder="Enter case type"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300 flex items-center gap-2">
+            <label className="block text-sm font-medium mb-2 text-gray-300 flex items-center gap-2">
               <Activity className="h-4 w-4" />
               Status
             </label>
             <select
               value={formData.isActive}
               onChange={(e) => setFormData({...formData, isActive: e.target.value})}
-              className="w-full p-3 border rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+              className="w-full p-3 border rounded-lg bg-gray-700 text-white border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
             >
               <option value="A">Active</option>
               <option value="I">Inactive</option>

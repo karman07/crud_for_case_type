@@ -2,16 +2,15 @@
 import axios from 'axios';
 import { CaseType, ApiResponse } from '@/types/caseType';
 
-const OAUTH_URL = 'https://intellinum-oauth-proxy.vercel.app/';
-const API_BASE_URL = 'https://g4b9bc24e36abdb-atpintellinum.adb.us-ashburn-1.oraclecloudapps.com/ords/krusteaz_quality_dev/quality/case-types';
+const OAUTH_URL = process.env.NEXT_PUBLIC_OAUTH_URL!;
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL!;
 
-const CLIENT_ID = 'VCeQqXIceSDz6MgdEofFsw..';
-const CLIENT_SECRET = 'VZqiAO74pVb2Vs1xPxAE8g..';
-const TOKEN_URL = 'https://g4b9bc24e36abdb-atpintellinum.adb.us-ashburn-1.oraclecloudapps.com/ords/krusteaz_quality_dev/oauth/token';
+const CLIENT_ID = process.env.NEXT_PUBLIC_CLIENT_ID!;
+const CLIENT_SECRET = process.env.NEXT_PUBLIC_CLIENT_SECRET!;
+const TOKEN_URL = process.env.NEXT_PUBLIC_TOKEN_URL!;
 
 export const getToken = async (): Promise<string> => {
   try {
-    // Generate fresh token using OAuth proxy
     const tokenResponse = await axios.post(OAUTH_URL, {
       tokenUrl: TOKEN_URL,
       clientId: CLIENT_ID,
@@ -23,12 +22,10 @@ export const getToken = async (): Promise<string> => {
       return tokenResponse.data.access_token;
     }
 
-    // Fallback to static token if OAuth fails
     console.warn('OAuth token generation failed, using fallback token');
     return 'KNRzh3Hpw8hTe666_taBkA';
   } catch (error) {
     console.error('Token generation failed:', error);
-    // Fallback to static token
     return 'KNRzh3Hpw8hTe666_taBkA';
   }
 };

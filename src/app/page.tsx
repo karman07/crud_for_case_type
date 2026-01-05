@@ -4,14 +4,12 @@ import { useState, useEffect } from 'react';
 import { CaseType } from '@/types/caseType';
 import { createCaseType, updateCaseType, getCaseTypes, deleteCaseType } from '@/lib/api';
 import { Toaster, toast } from 'react-hot-toast';
-import { Moon, Sun, Plus, RefreshCw } from 'lucide-react';
+import { Plus, RefreshCw } from 'lucide-react';
 import CaseTypeForm from '@/components/CaseTypeForm';
 import CaseTypeList from '@/components/CaseTypeList';
 import ConfirmDialog from '@/components/ConfirmDialog';
 import Pagination from '@/components/Pagination';
-import { useTheme } from '@/contexts/ThemeContext';
 
-// Force dynamic rendering since this page fetches data from API
 export const dynamic = 'force-dynamic';
 
 export default function Home() {
@@ -24,7 +22,6 @@ export default function Home() {
   const [pageSize, setPageSize] = useState(25);
   const [totalCount, setTotalCount] = useState(0);
   const [hasMore, setHasMore] = useState(false);
-  const { theme, toggleTheme } = useTheme();
   const [deleteDialog, setDeleteDialog] = useState<{ isOpen: boolean; id?: number; name?: string }>({
     isOpen: false
   });
@@ -160,17 +157,17 @@ export default function Home() {
         toastOptions={{
           duration: 4000,
           style: {
-            background: theme === 'dark' ? '#374151' : '#ffffff',
-            color: theme === 'dark' ? '#ffffff' : '#000000',
+            background: '#374151',
+            color: '#ffffff',
           },
         }}
       />
       
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-all duration-300">
+      <div className="min-h-screen bg-gray-900">
         <div className="container mx-auto px-4 py-6 max-w-7xl">
           {/* Header */}
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">
+            <h1 className="text-2xl sm:text-3xl font-bold text-white">
               Case Type Management
             </h1>
             <div className="flex items-center gap-3">
@@ -212,7 +209,7 @@ export default function Home() {
           )}
 
           {/* List with Pagination */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+          <div className="bg-gray-800 rounded-xl shadow-lg border border-gray-700 overflow-hidden">
             <CaseTypeList
               caseTypes={caseTypes}
               onEdit={handleEdit}
@@ -244,9 +241,9 @@ export default function Home() {
           {/* Edit Dialog */}
           {editDialog.isOpen && (
             <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full">
-                <div className="p-6 border-b border-gray-200 dark:border-gray-700">
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Edit Case Type</h3>
+              <div className="bg-gray-800 rounded-lg shadow-xl max-w-md w-full">
+                <div className="p-6 border-b border-gray-700">
+                  <h3 className="text-lg font-semibold text-white">Edit Case Type</h3>
                 </div>
                 <div className="p-6">
                   <CaseTypeForm
